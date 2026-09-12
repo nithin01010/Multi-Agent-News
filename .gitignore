@@ -1,0 +1,4 @@
+news_ai
+.env
+__pycache__/
+*.pyc
