@@ -1,0 +1,6 @@
+.vscode
+.env
+test.ipynb
+# Scripts
+main.py
+requirements.txt
