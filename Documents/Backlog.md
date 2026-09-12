@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Email
+- [X] Email
 - [ ] Formating News
 - [ ] Classification Agent
 - [ ] Top News Extracting Agent / Frequency Based
@@ -14,3 +14,4 @@
 - [ ] Personalized email
 - [ ] News website selection
 - [ ] Custom news category and Formating
+- [ ] Custom schedule
