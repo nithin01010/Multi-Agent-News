@@ -1,7 +1,7 @@
 # Tasks
 - [X] Email
 - [X] Formating News
-- [ ] Classification Agent
+- [X] Classification Agent
 - [ ] Top News Extracting Agent / Frequency Based
 - [ ] News Extraction from officail sites
 - [ ] Select top 3 trusted websites
