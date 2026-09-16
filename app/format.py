@@ -1,11 +1,10 @@
-from openai import OpenAI
-from email_module import Email
-from config import API_KEY
 import json
-client = OpenAI(
-  base_url = "https://integrate.api.nvidia.com/v1",
-  api_key = API_KEY
-)
+
+from config import API_KEY, MODEL
+from langchain_core.tools import tool
+from openai import OpenAI
+
+client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=API_KEY)
 
 SYSTEM_PROMPT = """
 You are an expert morning news editor and newsletter curator.
@@ -20,15 +19,23 @@ Guidelines:
 """
 
 
-
+@tool
 def format_news(news_data: dict) -> str:
+    """This Function can format the news data into valid html code
+
+    Args:
+        news_data (dict): the key will be the domains and value will be the news, which can be list
+
+    Returns:
+        str: HTML Code
+    """
 
     user_prompt = f"""
 Please format the following categorized news data into a ready-to-read daily morning newsletter:
 {json.dumps(news_data, indent=2)}
 """
     completion = client.chat.completions.create(
-        model="nvidia/nemotron-3-super-120b-a12b",
+        model=MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -45,10 +52,12 @@ def markdown_to_html(markdown_text: str) -> str:
     """Converts markdown text to styled responsive HTML for email."""
     try:
         import markdown
+
         converted_html = markdown.markdown(markdown_text)
     except ImportError:
         # Fallback if markdown library is not installed
         import html
+
         converted_html = f"<pre style='white-space: pre-wrap; font-family: inherit;'>{html.escape(markdown_text)}</pre>"
 
     return f"""<!DOCTYPE html>
@@ -111,30 +120,3 @@ def markdown_to_html(markdown_text: str) -> str:
     </div>
 </body>
 </html>"""
-
-
-if __name__ == "__main__":
-    # Dummy data for testing
-    sample_news = {
-        "state": [
-            "Heavy rainfall expected in coastal districts over the next 48 hours.",
-            "State government approves expansion of Metro line Phase 2.",
-        ],
-        "national": [
-            "ISRO prepares for its upcoming solar research payload launch.",
-            "Sensex gains 450 points led by banking and tech rally.",
-        ],
-        "global": [
-            "Global summit begins to discuss maritime navigation agreements.",
-        ],
-        "AI": [
-            "NVIDIA announces new open weights model series for enterprise AI.",
-        ],
-    }
-    formatted_output = format_news(sample_news)
-    html_output = markdown_to_html(formatted_output)
-
-    # print(formatted_output)
-    e = Email()
-    e.send_email("Testing", formatted_output, ["nithinmyneni010@gmail.com"], html_output)
-

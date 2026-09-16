@@ -10,4 +10,4 @@ In this sprint we are going to build a classification agent which can divide the
 - Use AI to split news into predefined domains
 - Format the output [use AI for this also]
 - Summary section
-- return the body text 
+- return the body text

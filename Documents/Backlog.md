@@ -1,6 +1,6 @@
 # Tasks
 - [X] Email
-- [ ] Formating News
+- [X] Formating News
 - [ ] Classification Agent
 - [ ] Top News Extracting Agent / Frequency Based
 - [ ] News Extraction from officail sites

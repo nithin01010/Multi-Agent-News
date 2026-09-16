@@ -1,3 +1,6 @@
+langchain-nvidia-ai-endpoints
+langchain-core
+langgraph
 openai
 python-dotenv
 markdown
