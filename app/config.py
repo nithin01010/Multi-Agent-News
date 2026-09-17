@@ -16,4 +16,4 @@ SENDER_EMAIL = os.getenv("sender_email")
 APP_PASSWORD = os.getenv("app_password")
 MODEL = os.getenv("model_name")
 API_KEY = os.getenv("API_KEY")
-
+IMAGE_MODEL = os.getenv("IMAGE_MODEL", "meta/llama-3.2-11b-vision-instruct")
