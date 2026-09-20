@@ -4,3 +4,5 @@ langgraph
 openai
 python-dotenv
 markdown
+pycryptodome
+requests
