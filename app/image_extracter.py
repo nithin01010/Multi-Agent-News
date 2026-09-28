@@ -4,7 +4,6 @@ import time
 import requests
 
 from config import API_KEY, IMAGE_MODEL
-from news_objects import fetch_epaper
 
 INVOKE_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 HEADERS = {"Authorization": f"Bearer {API_KEY}", "Accept": "application/json"}
@@ -64,18 +63,9 @@ def extract_page_text(
 
     return f"Error: Page extraction failed after {max_retries} attempts."
 
-
-def extract_content(url: str, limit: int = None, max_workers: int = 4) -> list[str]:
-    """Fetches pages from any supported ePaper URL and extracts text concurrently."""
-    batch = fetch_epaper(url)
-    urls = batch.image_urls
-    if limit:
-        urls = urls[:limit]
-
-    print(
-        f"[*] Extracting text concurrently from {len(urls)} pages ({batch.source}, date: {batch.date})..."
-    )
-    total_start = time.perf_counter()
+def extract_from_urls(urls: list[str], max_workers: int = 4) -> list[str]:
+    print(f"[*] Extracting text concurrently from {len(urls)} page images...")
+    start_time = time.perf_counter()
 
     results_indexed: dict[int, str] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -87,21 +77,11 @@ def extract_content(url: str, limit: int = None, max_workers: int = 4) -> list[s
             try:
                 text = future.result()
                 results_indexed[idx] = text
-                print(f"    -> Completed page {idx + 1}/{len(urls)} ({len(text)} chars)")
+                print(f"    -> Completed image {idx + 1}/{len(urls)} ({len(text)} chars)")
             except Exception as e:
-                print(f"    [!] Error extracting page {idx + 1}: {e}")
+                print(f"    [!] Error extracting image {idx + 1}: {e}")
                 results_indexed[idx] = f"Error: {e}"
 
-    results = [results_indexed[i] for i in range(len(urls))]
-    total_duration = time.perf_counter() - total_start
-    print(
-        f"\n[*] All {len(urls)} pages completed in {total_duration:.2f}s ({total_duration/60:.2f} mins)"
-    )
-    return results
-
-
-# if __name__ == "__main__":
-#     test_url = "https://epaper.andhrajyothy.com/NTR_VIJAYAWADA_MAIN?eid=182&edate=09/09/2026"
-#     print(f"Starting extraction for: {test_url}")
-#     batch = fetch_epaper(test_url)
-#     print(f"Found {len(batch.image_urls)} page URLs.")
+    duration = time.perf_counter() - start_time
+    print(f"[*] Extraction of {len(urls)} pages completed in {duration:.2f}s ({duration/60:.2f} mins)")
+    return [results_indexed[i] for i in range(len(urls))]

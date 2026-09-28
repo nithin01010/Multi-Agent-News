@@ -1,23 +1,55 @@
 from classify_news import classify_news
-from dummy_news import domains, dummy_news
 from email_module import send_email
 from format import format_news, markdown_to_html
+from news_urls import get_all_image_urls
+from image_extracter import extract_from_urls
+from rank_news import get_top_news_by_category
 
-# Step 1: Classify news into domains
-print("Step 1: Classifying news...")
-classified = classify_news.invoke({"news_list": dummy_news, "domains": domains})
+domains = ["State", "National", "Global", "Tech & AI", "Sport"]
+
+# call image urls from differnt news_objects
+print("Gathering news image urls")
+image_urls = get_all_image_urls()
+print("Got all the image urls")
+
+
+
+# Send to Extracter
+print("Extracting news from urls")
+news_list = extract_from_urls(image_urls)
+print("Extracting done")
+
+
+
+# Classify news into domains
+print("Classifying news...")
+classified = classify_news.invoke({"news_list": news_list, "domains": domains})
 print("Classified:", classified)
 
-# Step 2: Format classified news into newsletter markdown
-print("\nStep 2: Formatting newsletter...")
-formatted_md = format_news.invoke({"news_data": classified})
+
+
+# Take top N news from each cat
+print("Picking top 5 news from each category")
+top_n_news = get_top_news_by_category.invoke({
+    "categorized_news": classified,
+    "top_n": 5
+})
+print("Picked top 5 news")
+
+
+
+# Format classified news into newsletter markdown
+print("\nFormatting newsletter...")
+formatted_md = format_news.invoke({"news_data": top_n_news})
 print("Formatted markdown ready.")
 
-# Step 3: Convert markdown to HTML
+# Convert markdown to HTML
 html_body = markdown_to_html(formatted_md)
 
-# Step 4: Send email
-print("\nStep 3: Sending email...")
+
+
+# Send email
+print("\nSending email...")
 result = send_email.invoke({
     "subject": "Daily Morning Digest",
     "recipients": ["pbhargavreddy3@gmail.com", "nithinmyneni010@gmail.com"],
