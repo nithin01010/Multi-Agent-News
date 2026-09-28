@@ -100,8 +100,8 @@ def extract_content(url: str, limit: int = None, max_workers: int = 4) -> list[s
     return results
 
 
-if __name__ == "__main__":
-    test_url = "https://epaper.andhrajyothy.com/NTR_VIJAYAWADA_MAIN?eid=182&edate=09/09/2026"
-    print(f"Starting extraction for: {test_url}")
-    batch = fetch_epaper(test_url)
-    print(f"Found {len(batch.image_urls)} page URLs.")
+# if __name__ == "__main__":
+#     test_url = "https://epaper.andhrajyothy.com/NTR_VIJAYAWADA_MAIN?eid=182&edate=09/09/2026"
+#     print(f"Starting extraction for: {test_url}")
+#     batch = fetch_epaper(test_url)
+#     print(f"Found {len(batch.image_urls)} page URLs.")

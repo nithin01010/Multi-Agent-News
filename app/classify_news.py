@@ -1,5 +1,4 @@
 import json
-
 from config import API_KEY, MODEL
 from langchain_core.tools import tool
 from openai import OpenAI
