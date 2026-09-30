@@ -1,12 +1,10 @@
 import json
 from config import API_KEY, MODEL
-from langchain_core.tools import tool
 from openai import OpenAI
 
 client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=API_KEY)
 
 
-@tool
 def get_top_news_by_category(
     categorized_news: dict[str, list[str]],
     top_n: int = 5,
@@ -30,8 +28,10 @@ def get_top_news_by_category(
         # If items are already within top_n, keep them directly without extra API call
         if len(news_items) <= top_n:
             ranked_news[category] = news_items
+            print(f"  Category '{category}' has {len(news_items)} items (within limit, kept as is)")
             continue
 
+        print(f"  Ranking category '{category}' ({len(news_items)} items to top {top_n})...")
         prompt = f"""
         You are a senior news editor.
         From the following list of news items under the category '{category}', select the top {top_n} most impactful, important, and distinct news items.
@@ -61,6 +61,8 @@ def get_top_news_by_category(
 
         content = response.choices[0].message.content
         parsed = json.loads(content)
-        ranked_news[category] = parsed.get("top_news", [])[:top_n]
+        selected = parsed.get("top_news", [])[:top_n]
+        ranked_news[category] = selected
+        print(f"  Selected top {len(selected)} stories for '{category}'")
 
     return ranked_news

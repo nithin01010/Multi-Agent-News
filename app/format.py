@@ -1,7 +1,6 @@
 import json
 
 from config import API_KEY, MODEL
-from langchain_core.tools import tool
 from openai import OpenAI
 
 client = OpenAI(base_url="https://integrate.api.nvidia.com/v1", api_key=API_KEY)
@@ -19,7 +18,6 @@ Guidelines:
 """
 
 
-@tool
 def format_news(news_data: dict) -> str:
     """This Function can format the news data into valid html code
 
@@ -34,6 +32,7 @@ def format_news(news_data: dict) -> str:
 Please format the following categorized news data into a ready-to-read daily morning newsletter:
 {json.dumps(news_data, indent=2)}
 """
+    print(f"  Formatting newsletter for {len(news_data)} categories...")
     completion = client.chat.completions.create(
         model=MODEL,
         messages=[
@@ -45,7 +44,9 @@ Please format the following categorized news data into a ready-to-read daily mor
         max_tokens=1024,
         stream=False,
     )
-    return completion.choices[0].message.content
+    result = completion.choices[0].message.content
+    print(f"  Generated markdown newsletter ({len(result)} chars)")
+    return result
 
 
 def markdown_to_html(markdown_text: str) -> str:

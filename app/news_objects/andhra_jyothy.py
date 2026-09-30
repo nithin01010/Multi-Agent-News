@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urlparse
 import requests
 from Crypto.Cipher import AES
@@ -22,7 +22,8 @@ class AndhraJyothyProvider(BaseEpaperProvider):
     def fetch(self, url: str) -> EpaperBatch:
         params = parse_qs(urlparse(url).query)
         eid = params.get("eid", ["182"])[0]
-        date = params.get("edate", [datetime.now().strftime("%d/%m/%Y")])[0]
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%d/%m/%Y")
+        date = params.get("edate", [yesterday])[0]
 
         res = requests.post(
             "https://epaper.andhrajyothy.com/Home/GetAllpagespost",

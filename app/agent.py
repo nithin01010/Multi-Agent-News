@@ -13,7 +13,6 @@ image_urls = get_all_image_urls()
 print("Got all the image urls")
 
 
-
 # Send to Extracter
 print("Extracting news from urls")
 news_list = extract_from_urls(image_urls)
@@ -23,36 +22,34 @@ print("Extracting done")
 
 # Classify news into domains
 print("Classifying news...")
-classified = classify_news.invoke({"news_list": news_list, "domains": domains})
-print("Classified:", classified)
+classified = classify_news(news_list, domains)
+print("Classification done")
 
 
 
 # Take top N news from each cat
 print("Picking top 5 news from each category")
-top_n_news = get_top_news_by_category.invoke({
-    "categorized_news": classified,
-    "top_n": 5
-})
+top_n_news = get_top_news_by_category(
+    categorized_news=classified,
+    top_n=5
+)
 print("Picked top 5 news")
 
 
 
 # Format classified news into newsletter markdown
 print("\nFormatting newsletter...")
-formatted_md = format_news.invoke({"news_data": top_n_news})
+formatted_md = format_news(top_n_news)
 print("Formatted markdown ready.")
 
 # Convert markdown to HTML
 html_body = markdown_to_html(formatted_md)
 
-
-
 # Send email
 print("\nSending email...")
-result = send_email.invoke({
-    "subject": "Daily Morning Digest",
-    "recipients": ["pbhargavreddy3@gmail.com", "nithinmyneni010@gmail.com"],
-    "html_body": html_body,
-})
+result = send_email(
+    subject="Daily Morning Digest",
+    recipients=["pbhargavreddy3@gmail.com", "nithinmyneni010@gmail.com"],
+    html_body=html_body,
+)
 print("Email sent!" if result else "Email failed.")

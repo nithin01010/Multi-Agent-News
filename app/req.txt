@@ -6,3 +6,4 @@ python-dotenv
 markdown
 pycryptodome
 requests
+langchain

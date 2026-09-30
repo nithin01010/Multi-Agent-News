@@ -10,5 +10,6 @@ def get_all_image_urls() -> list[str]:
     all_images = []
     for url in urls:
         batch = fetch_epaper(url)
+        print(f"  Fetched {len(batch.image_urls)} page images from {batch.source} ({batch.date})")
         all_images.extend(batch.image_urls)
     return all_images

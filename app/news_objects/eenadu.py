@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urlparse
 import requests
 from .schema import BaseEpaperProvider, EpaperBatch
@@ -11,11 +11,12 @@ class EenaduProvider(BaseEpaperProvider):
     def fetch(self, url: str) -> EpaperBatch:
         params = parse_qs(urlparse(url).query)
         eid = params.get("eid", params.get("editionid", ["2"]))[0]
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%d/%m/%Y")
         date = params.get(
             "date",
             params.get(
                 "edate",
-                params.get("editiondate", [datetime.now().strftime("%d/%m/%Y")]),
+                params.get("editiondate", [yesterday]),
             ),
         )[0]
 

@@ -1,11 +1,9 @@
-from langchain_core.tools import tool
 import smtplib
 from email.message import EmailMessage
 
 from config import APP_PASSWORD, SENDER_EMAIL, SMTP_PORT, SMTP_SERVER
 
 
-@tool
 def send_email(
     subject: str,
     recipients: list[str],
@@ -33,21 +31,12 @@ def send_email(
     msg.set_content(html_body, subtype="html")
 
     try:
+        print(f"  Connecting to SMTP server {SMTP_SERVER}:{SMTP_PORT}...")
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
             server.login(SENDER_EMAIL, APP_PASSWORD)
             server.send_message(msg)
-        print("Email sent")
+        print(f"  Email sent successfully to {len(recipients)} recipient(s)")
         return True
     except Exception as e:
-        print("Error while sending mail, with:", e)
+        print(f"  Error sending email: {e}")
         return False
-
-
-# if __name__ == "__main__":
-#     e = Email()
-#     e.send_email(
-#         subject="testing",
-#         body="working",
-#         recipients=["nithinmyneni010@gmail.com"],
-#         html_body="<h2>Testing HTML Email</h2><p>The email module now supports <strong>rich HTML</strong>!</p>",
-#     )

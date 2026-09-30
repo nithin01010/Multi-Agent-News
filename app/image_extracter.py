@@ -64,7 +64,7 @@ def extract_page_text(
     return f"Error: Page extraction failed after {max_retries} attempts."
 
 def extract_from_urls(urls: list[str], max_workers: int = 4) -> list[str]:
-    print(f"[*] Extracting text concurrently from {len(urls)} page images...")
+    print(f"  Extracting text concurrently from {len(urls)} page images...")
     start_time = time.perf_counter()
 
     results_indexed: dict[int, str] = {}
@@ -79,9 +79,9 @@ def extract_from_urls(urls: list[str], max_workers: int = 4) -> list[str]:
                 results_indexed[idx] = text
                 print(f"    -> Completed image {idx + 1}/{len(urls)} ({len(text)} chars)")
             except Exception as e:
-                print(f"    [!] Error extracting image {idx + 1}: {e}")
+                print(f"    Error extracting image {idx + 1}: {e}")
                 results_indexed[idx] = f"Error: {e}"
 
     duration = time.perf_counter() - start_time
-    print(f"[*] Extraction of {len(urls)} pages completed in {duration:.2f}s ({duration/60:.2f} mins)")
+    print(f"  Extraction of {len(urls)} pages completed in {duration:.2f}s ({duration/60:.2f} mins)")
     return [results_indexed[i] for i in range(len(urls))]
