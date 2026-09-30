@@ -2,6 +2,7 @@ import os
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 
+from alert import send_failure_alert
 from config import API_KEY, MODEL
 from tools import tools
 
@@ -35,6 +36,12 @@ if __name__ == "__main__":
     )
 
     print("[*] Starting Autonomous Agent...")
-    result = agent.invoke({"messages": [{"role": "user", "content": query}]})
-    print("\n[Autonomous Agent Completed]")
-    print(result["messages"][-1].content)
+    try:
+        result = agent.invoke({"messages": [{"role": "user", "content": query}]})
+        print("\n[Autonomous Agent Completed]")
+        print(result["messages"][-1].content)
+    except Exception as e:
+        print(f"\nExecution failed: {e}")
+        send_failure_alert(e, context="Autonomous Agent")
+        raise
+

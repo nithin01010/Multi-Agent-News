@@ -4,10 +4,8 @@
 - [X] Classification Agent
 - [X] Top News Extracting Agent / Frequency Based
 - [X] News Extraction from officail sites
-- [ ] Select top 3 trusted websites
-- [ ] Search Agent for finding trusted news websites
-- [ ] Error Handling
-- [ ] Alert system [Mail to admin incase of failure]
+- [X] Error Handling
+- [X] Alert system [Mail to admin incase of failure]
 
 
 # Future enchanments
